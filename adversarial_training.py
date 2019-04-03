@@ -235,7 +235,7 @@ class AdversarialTraining(object):
         setattr(self, verbosity_or_loglevel + '_level', _level)
 
 
-        _minibatch = {'medium': 2000,
+        _minibatch = {'medium': 200,
                       'high': 100,
                       'snoop': 1}.get(level)
         setattr(self, verbosity_or_loglevel + '_minibatch', _minibatch)

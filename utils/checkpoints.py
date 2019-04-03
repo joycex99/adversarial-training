@@ -66,14 +66,14 @@ def params_to_filename(experiment_name, architecture, epoch_val=None):
 
     if isinstance(epoch_val, int):
         return '.'.join([experiment_name, architecture, '%06d' % epoch_val,
-                         'path', 'tar'])
+                         'pt']) # 'path', 'tar'
 
 
 
     glob_prefix = os.path.join(*[CHECKPOINT_DIR,
                                  '%s.%s.*' % (experiment_name, architecture)])
     re_prefix = '%s\.%s\.' % (experiment_name, architecture)
-    re_suffix = r'\.path\.tar'
+    re_suffix = r'\.pt' #r'\.path\.tar'
 
     valid_name = lambda f: bool(re.match(re_prefix + r'\d{6}' + re_suffix,f))
     select_epoch = lambda f: int(re.sub(re_prefix, '',
