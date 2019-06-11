@@ -78,6 +78,48 @@ def load_pretrained_cifar_resnet(flavor=32,
     return classifier_net
 
 
+def load_trained_resnet(path_to_checkpoint,
+                                 flavor=32,
+                                 return_normalizer=False,
+                                 manual_gpu=None):
+    """ Helper fxn to initialize/load the pretrained cifar resnet
+    """
+
+    # assert valid flavor
+    valid_flavor_numbers = [110, 1202, 20, 32, 44, 56]
+    assert flavor in valid_flavor_numbers
+
+
+    # Resolve CPU/GPU stuff
+    if manual_gpu is not None:
+        use_gpu = manual_gpu
+    else:
+        use_gpu = utils.use_gpu()
+
+    if use_gpu:
+        map_location = None
+    else:
+        map_location = (lambda s, l: s)
+
+
+    # need to modify the resnet state dict to be proper
+    # TODO: LOAD THESE INTO MODEL ZOO
+    bad_state_dict = torch.load(path_to_checkpoint, map_location=map_location)
+    correct_state_dict = {re.sub(r'^module\.', '', k): v for k, v in
+                          bad_state_dict['state_dict'].items()}
+
+
+    classifier_net = eval("cifar_resnets.resnet%s" % flavor)()
+    classifier_net.load_state_dict(correct_state_dict)
+
+    if return_normalizer:
+        normalizer = utils.DifferentiableNormalize(mean=CIFAR10_MEANS,
+                                                   std=CIFAR10_STDS)
+        return classifier_net, normalizer
+
+    return classifier_net
+
+
 def load_pretrained_cifar_wide_resnet(use_gpu=False, return_normalizer=False):
     """ Helper fxn to initialize/load a pretrained 28x10 CIFAR resnet """
 

@@ -11,8 +11,9 @@ output_images/*
 !output_images/ # pretrained models shouldn't live on github
 output_images/*
 
-!scripts/ # only certain scripts should live on github
-scripts/*
+# !scripts/ # only certain scripts should live on github
+# scripts/*
+my_models/*
 
 #notebooks should be ignored except for a few basic ones
 notebooks/*
